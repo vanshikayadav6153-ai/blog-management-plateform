@@ -1,0 +1,3187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Inkly — Blog Management Platform</title>
+
+    <style>
+        /* =========================
+           RESET
+        ========================= */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6c5ce7;
+            --primary-dark: #5546d0;
+            --secondary: #00b894;
+
+            --bg: #f7f8fc;
+            --card: #ffffff;
+            --text: #18181b;
+            --muted: #71717a;
+            --border: #e4e4e7;
+
+            --danger: #ef4444;
+            --warning: #f59e0b;
+
+            --shadow:
+                0 10px 35px rgba(15, 23, 42, 0.08);
+
+            --radius: 18px;
+        }
+
+        body.dark {
+            --bg: #0f1117;
+            --card: #181b23;
+            --text: #f4f4f5;
+            --muted: #a1a1aa;
+            --border: #2c303a;
+
+            --shadow:
+                0 10px 35px rgba(0, 0, 0, 0.3);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family:
+                Inter,
+                ui-sans-serif,
+                system-ui,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+
+            transition:
+                background 0.3s ease,
+                color 0.3s ease;
+        }
+
+        button,
+        input,
+        textarea,
+        select {
+            font: inherit;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .container {
+            width: min(1180px, 92%);
+            margin: auto;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+
+        /* =========================
+           HEADER
+        ========================= */
+
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+
+            background:
+                color-mix(
+                    in srgb,
+                    var(--card) 88%,
+                    transparent
+                );
+
+            backdrop-filter: blur(18px);
+
+            border-bottom: 1px solid var(--border);
+        }
+
+        .navbar {
+            min-height: 72px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 25px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            font-size: 23px;
+            font-weight: 900;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 12px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--primary),
+                    #a855f7
+                );
+
+            color: white;
+
+            box-shadow:
+                0 8px 20px rgba(108, 92, 231, 0.3);
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        nav button {
+            border: 0;
+            background: transparent;
+
+            color: var(--muted);
+
+            padding: 9px 13px;
+            border-radius: 10px;
+
+            transition: 0.2s;
+        }
+
+        nav button:hover,
+        nav button.active {
+            color: var(--primary);
+            background: rgba(108, 92, 231, 0.1);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .icon-btn {
+            width: 42px;
+            height: 42px;
+
+            border: 1px solid var(--border);
+            background: var(--card);
+            color: var(--text);
+
+            border-radius: 12px;
+
+            display: grid;
+            place-items: center;
+
+            transition: 0.2s;
+        }
+
+        .icon-btn:hover {
+            transform: translateY(-2px);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .mobile-menu {
+            display: none;
+        }
+
+
+        /* =========================
+           HERO
+        ========================= */
+
+        .hero {
+            margin-top: 35px;
+
+            min-height: 350px;
+
+            padding: 55px;
+
+            border-radius: 30px;
+
+            color: white;
+
+            position: relative;
+            overflow: hidden;
+
+            background:
+                radial-gradient(
+                    circle at 80% 20%,
+                    rgba(255,255,255,.25),
+                    transparent 25%
+                ),
+                radial-gradient(
+                    circle at 10% 90%,
+                    rgba(0,184,148,.35),
+                    transparent 25%
+                ),
+                linear-gradient(
+                    135deg,
+                    #5145cd,
+                    #7c3aed,
+                    #9333ea
+                );
+
+            box-shadow:
+                0 25px 60px rgba(108, 92, 231, .25);
+
+            display: flex;
+            align-items: center;
+        }
+
+        .hero-content {
+            max-width: 680px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+
+            padding: 7px 13px;
+            border-radius: 50px;
+
+            background: rgba(255,255,255,.16);
+            border: 1px solid rgba(255,255,255,.25);
+
+            font-size: 13px;
+            margin-bottom: 18px;
+        }
+
+        .hero h1 {
+            font-size: clamp(38px, 6vw, 65px);
+            line-height: 1.05;
+            margin-bottom: 20px;
+            letter-spacing: -2px;
+        }
+
+        .hero p {
+            font-size: 17px;
+            opacity: .9;
+            max-width: 580px;
+        }
+
+        .hero-shape {
+            position: absolute;
+
+            width: 300px;
+            height: 300px;
+
+            border-radius: 50%;
+
+            right: -100px;
+            bottom: -140px;
+
+            background:
+                rgba(255,255,255,.08);
+        }
+
+
+        /* =========================
+           SEARCH
+        ========================= */
+
+        .toolbar {
+            margin: 35px 0;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            gap: 15px;
+        }
+
+        .search-wrapper {
+            flex: 1;
+            max-width: 650px;
+
+            position: relative;
+        }
+
+        .search-wrapper span {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .search-wrapper input {
+            width: 100%;
+
+            padding: 14px 18px 14px 45px;
+
+            background: var(--card);
+            border: 1px solid var(--border);
+
+            color: var(--text);
+
+            border-radius: 13px;
+            outline: none;
+
+            transition: .2s;
+        }
+
+        .search-wrapper input:focus {
+            border-color: var(--primary);
+
+            box-shadow:
+                0 0 0 4px rgba(108,92,231,.1);
+        }
+
+        select,
+        input,
+        textarea {
+            background: var(--card);
+            color: var(--text);
+        }
+
+        .filter-select {
+            padding: 14px 18px;
+
+            border-radius: 13px;
+            border: 1px solid var(--border);
+
+            outline: none;
+        }
+
+
+        /* =========================
+           SECTION HEADER
+        ========================= */
+
+        .section-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: end;
+
+            margin-bottom: 22px;
+        }
+
+        .section-heading h2 {
+            font-size: 27px;
+        }
+
+        .section-heading p {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+
+        /* =========================
+           BLOG GRID
+        ========================= */
+
+        .posts-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, minmax(0, 1fr));
+
+            gap: 22px;
+        }
+
+        .post-card {
+            background: var(--card);
+
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+
+            overflow: hidden;
+
+            box-shadow: var(--shadow);
+
+            transition:
+                transform .25s ease,
+                box-shadow .25s ease;
+
+            animation: fadeUp .45s ease both;
+        }
+
+        .post-card:hover {
+            transform: translateY(-7px);
+
+            box-shadow:
+                0 20px 45px rgba(15,23,42,.13);
+        }
+
+        .post-cover {
+            height: 180px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 55px;
+
+            position: relative;
+
+            color: white;
+        }
+
+        .cover-tech {
+            background:
+                linear-gradient(135deg,#2563eb,#7c3aed);
+        }
+
+        .cover-design {
+            background:
+                linear-gradient(135deg,#ec4899,#f97316);
+        }
+
+        .cover-life {
+            background:
+                linear-gradient(135deg,#059669,#14b8a6);
+        }
+
+        .cover-business {
+            background:
+                linear-gradient(135deg,#111827,#475569);
+        }
+
+        .cover-travel {
+            background:
+                linear-gradient(135deg,#0284c7,#06b6d4);
+        }
+
+        .post-body {
+            padding: 20px;
+        }
+
+        .category {
+            display: inline-block;
+
+            font-size: 12px;
+            font-weight: 700;
+
+            color: var(--primary);
+
+            background:
+                rgba(108,92,231,.1);
+
+            padding: 5px 9px;
+
+            border-radius: 50px;
+
+            margin-bottom: 10px;
+        }
+
+        .post-title {
+            font-size: 20px;
+            line-height: 1.3;
+            margin-bottom: 9px;
+        }
+
+        .post-excerpt {
+            color: var(--muted);
+
+            font-size: 14px;
+
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+
+            overflow: hidden;
+        }
+
+        .post-info {
+            display: flex;
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin-top: 17px;
+            padding-top: 15px;
+
+            border-top: 1px solid var(--border);
+        }
+
+        .author {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+        }
+
+        .avatar {
+            width: 32px;
+            height: 32px;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 50%;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--primary),
+                    #a855f7
+                );
+
+            color: white;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .author-name {
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .post-date {
+            font-size: 11px;
+            color: var(--muted);
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 7px;
+        }
+
+        .small-btn {
+            width: 34px;
+            height: 34px;
+
+            display: grid;
+            place-items: center;
+
+            border: 1px solid var(--border);
+            background: var(--card);
+
+            border-radius: 9px;
+
+            transition: .2s;
+        }
+
+        .small-btn:hover {
+            color: var(--primary);
+            transform: scale(1.06);
+        }
+
+        .small-btn.liked {
+            color: #ef4444;
+            background: rgba(239,68,68,.1);
+        }
+
+        .small-btn.bookmarked {
+            color: var(--warning);
+            background: rgba(245,158,11,.1);
+        }
+
+
+        /* =========================
+           EMPTY STATE
+        ========================= */
+
+        .empty-state {
+            padding: 70px 20px;
+
+            text-align: center;
+
+            border: 1px dashed var(--border);
+            border-radius: var(--radius);
+
+            background: var(--card);
+        }
+
+        .empty-icon {
+            font-size: 55px;
+            margin-bottom: 15px;
+        }
+
+        .empty-state h3 {
+            font-size: 22px;
+            margin-bottom: 5px;
+        }
+
+        .empty-state p {
+            color: var(--muted);
+        }
+
+
+        /* =========================
+           BUTTONS
+        ========================= */
+
+        .btn {
+            border: 0;
+
+            padding: 12px 18px;
+
+            border-radius: 11px;
+
+            font-weight: 700;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+
+            transition: .2s;
+        }
+
+        .btn-primary {
+            color: white;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--primary),
+                    #8b5cf6
+                );
+
+            box-shadow:
+                0 8px 18px rgba(108,92,231,.2);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 12px 25px rgba(108,92,231,.3);
+        }
+
+        .btn-secondary {
+            color: var(--text);
+
+            background: var(--card);
+
+            border: 1px solid var(--border);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+
+        /* =========================
+           READER
+        ========================= */
+
+        .reader {
+            max-width: 850px;
+            margin: 45px auto;
+        }
+
+        .reader-cover {
+            height: 320px;
+
+            border-radius: 25px;
+
+            display: grid;
+            place-items: center;
+
+            color: white;
+            font-size: 90px;
+
+            margin-bottom: 30px;
+        }
+
+        .reader-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            color: var(--muted);
+
+            font-size: 14px;
+
+            margin: 14px 0 22px;
+        }
+
+        .reader h1 {
+            font-size: clamp(34px, 6vw, 55px);
+            line-height: 1.1;
+        }
+
+        .reader-content {
+            font-size: 18px;
+            line-height: 1.9;
+        }
+
+        .reader-content p {
+            margin-bottom: 20px;
+        }
+
+        .reader-actions {
+            display: flex;
+            gap: 10px;
+
+            margin: 25px 0;
+        }
+
+
+        /* =========================
+           COMMENTS
+        ========================= */
+
+        .comments {
+            margin-top: 45px;
+            padding-top: 30px;
+
+            border-top: 1px solid var(--border);
+        }
+
+        .comment-form {
+            display: flex;
+            gap: 10px;
+
+            margin: 18px 0 25px;
+        }
+
+        .comment-form input {
+            flex: 1;
+
+            padding: 13px;
+
+            border: 1px solid var(--border);
+            border-radius: 10px;
+
+            outline: none;
+        }
+
+        .comment {
+            padding: 14px 0;
+
+            border-bottom: 1px solid var(--border);
+        }
+
+        .comment strong {
+            font-size: 14px;
+        }
+
+        .comment p {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+
+        /* =========================
+           MANAGE
+        ========================= */
+
+        .manage-page {
+            padding: 45px 0;
+        }
+
+        .form-card {
+            max-width: 850px;
+
+            margin: auto;
+
+            background: var(--card);
+
+            border: 1px solid var(--border);
+            border-radius: 20px;
+
+            padding: 30px;
+
+            box-shadow: var(--shadow);
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+
+            font-size: 13px;
+            font-weight: 700;
+
+            margin-bottom: 7px;
+        }
+
+        .form-control {
+            width: 100%;
+
+            padding: 13px 14px;
+
+            border: 1px solid var(--border);
+
+            border-radius: 10px;
+
+            outline: none;
+
+            resize: vertical;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+
+            box-shadow:
+                0 0 0 4px rgba(108,92,231,.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .manage-list {
+            max-width: 850px;
+            margin: 30px auto;
+        }
+
+        .manage-item {
+            display: flex;
+
+            justify-content: space-between;
+            align-items: center;
+
+            gap: 15px;
+
+            padding: 17px;
+
+            margin-bottom: 10px;
+
+            background: var(--card);
+
+            border: 1px solid var(--border);
+
+            border-radius: 13px;
+        }
+
+        .manage-item h4 {
+            margin-bottom: 3px;
+        }
+
+        .manage-item p {
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .manage-actions {
+            display: flex;
+            gap: 7px;
+        }
+
+
+        /* =========================
+           TOAST
+        ========================= */
+
+        .toast {
+            position: fixed;
+
+            right: 20px;
+            bottom: 20px;
+
+            z-index: 999;
+
+            padding: 14px 18px;
+
+            border-radius: 12px;
+
+            background: #18181b;
+            color: white;
+
+            box-shadow:
+                0 15px 35px rgba(0,0,0,.2);
+
+            transform: translateY(100px);
+            opacity: 0;
+
+            transition: .3s;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+
+        /* =========================
+           FOOTER
+        ========================= */
+
+        footer {
+            margin-top: 80px;
+
+            padding: 35px 0;
+
+            border-top: 1px solid var(--border);
+
+            text-align: center;
+
+            color: var(--muted);
+        }
+
+
+        /* =========================
+           ANIMATIONS
+        ========================= */
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pop {
+            0% {
+                transform: scale(.8);
+            }
+
+            70% {
+                transform: scale(1.15);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .pop {
+            animation: pop .3s ease;
+        }
+
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media (max-width: 900px) {
+
+            .posts-grid {
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+            }
+
+            .hero {
+                padding: 40px;
+            }
+        }
+
+        @media (max-width: 680px) {
+
+            .navbar {
+                min-height: 64px;
+            }
+
+            nav {
+                display: none;
+            }
+
+            .mobile-menu {
+                display: grid;
+            }
+
+            .hero {
+                min-height: 390px;
+                padding: 30px;
+            }
+
+            .hero h1 {
+                font-size: 42px;
+            }
+
+            .toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-wrapper {
+                max-width: none;
+            }
+
+            .posts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .manage-item {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .manage-actions {
+                width: 100%;
+            }
+
+            .manage-actions .btn {
+                flex: 1;
+            }
+
+            .reader-cover {
+                height: 230px;
+            }
+
+            .comment-form {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+
+<body>
+
+<!-- =========================
+     HEADER
+========================= -->
+
+<header>
+
+    <div class="container navbar">
+
+        <a href="#" class="logo" onclick="showHome()">
+            <span class="logo-icon">✦</span>
+            Inkly
+        </a>
+
+        <nav>
+            <button id="navHome" class="active" onclick="showHome()">
+                Explore
+            </button>
+
+            <button onclick="showManage()">
+                Manage Posts
+            </button>
+        </nav>
+
+        <div class="header-actions">
+
+            <button
+                class="icon-btn"
+                onclick="toggleTheme()"
+                title="Toggle theme"
+                id="themeButton"
+            >
+                🌙
+            </button>
+
+            <button
+                class="icon-btn mobile-menu"
+                onclick="toggleMobileMenu()"
+            >
+                ☰
+            </button>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<!-- =========================
+     MAIN
+========================= -->
+
+<main class="container">
+
+
+    <!-- =========================
+         HOME
+    ========================= -->
+
+    <section id="homePage">
+
+        <div class="hero">
+
+            <div class="hero-content">
+
+                <span class="hero-badge">
+                    ✨ Stories worth reading
+                </span>
+
+                <h1>
+                    Ideas that make
+                    you think.
+                </h1>
+
+                <p>
+                    Explore insightful stories, practical guides,
+                    creative ideas and inspiring experiences from
+                    our community of writers.
+                </p>
+
+                <br>
+
+                <button
+                    class="btn btn-primary"
+                    onclick="scrollToPosts()"
+                >
+                    Explore Articles →
+                </button>
+
+            </div>
+
+            <div class="hero-shape"></div>
+
+        </div>
+
+
+        <!-- Search -->
+
+        <div class="toolbar" id="postsSection">
+
+            <div class="search-wrapper">
+
+                <span>🔎</span>
+
+                <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="Search articles, topics or authors..."
+                >
+
+            </div>
+
+            <select
+                id="categoryFilter"
+                class="filter-select"
+            >
+                <option value="all">
+                    All Categories
+                </option>
+
+                <option value="Technology">
+                    Technology
+                </option>
+
+                <option value="Design">
+                    Design
+                </option>
+
+                <option value="Lifestyle">
+                    Lifestyle
+                </option>
+
+                <option value="Business">
+                    Business
+                </option>
+
+                <option value="Travel">
+                    Travel
+                </option>
+            </select>
+
+        </div>
+
+
+        <div class="section-heading">
+
+            <div>
+                <h2>Latest Stories</h2>
+
+                <p id="resultCount">
+                    Discover something interesting.
+                </p>
+            </div>
+
+            <button
+                class="btn btn-primary"
+                onclick="showManage()"
+            >
+                + New Post
+            </button>
+
+        </div>
+
+
+        <div
+            id="postsGrid"
+            class="posts-grid"
+        ></div>
+
+
+        <div
+            id="emptyState"
+            class="empty-state hidden"
+        >
+
+            <div class="empty-icon">
+                🔍
+            </div>
+
+            <h3>
+                No stories found
+            </h3>
+
+            <p>
+                Try another keyword or category.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         READER
+    ========================= -->
+
+    <section
+        id="readerPage"
+        class="reader hidden"
+    >
+
+        <button
+            class="btn btn-secondary"
+            onclick="showHome()"
+        >
+            ← Back to stories
+        </button>
+
+        <br><br>
+
+        <div
+            id="readerCover"
+            class="reader-cover"
+        >
+            💻
+        </div>
+
+        <span
+            id="readerCategory"
+            class="category"
+        ></span>
+
+        <h1 id="readerTitle"></h1>
+
+        <div class="reader-meta">
+
+            <span id="readerAuthor"></span>
+            <span>•</span>
+            <span id="readerDate"></span>
+            <span>•</span>
+            <span id="readerReadTime"></span>
+
+        </div>
+
+
+        <div class="reader-actions">
+
+            <button
+                id="readerLike"
+                class="btn btn-secondary"
+                onclick="toggleCurrentLike()"
+            >
+                ♡ Like
+            </button>
+
+            <button
+                id="readerBookmark"
+                class="btn btn-secondary"
+                onclick="toggleCurrentBookmark()"
+            >
+                🔖 Bookmark
+            </button>
+
+        </div>
+
+
+        <article
+            id="readerContent"
+            class="reader-content"
+        ></article>
+
+
+        <!-- Comments -->
+
+        <div class="comments">
+
+            <h2>
+                Comments
+            </h2>
+
+            <p
+                id="commentCount"
+                style="color:var(--muted);font-size:14px;"
+            ></p>
+
+            <div class="comment-form">
+
+                <input
+                    id="commentInput"
+                    type="text"
+                    placeholder="Write a comment..."
+                >
+
+                <button
+                    class="btn btn-primary"
+                    onclick="addComment()"
+                >
+                    Comment
+                </button>
+
+            </div>
+
+            <div id="commentsList"></div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         MANAGE
+    ========================= -->
+
+    <section
+        id="managePage"
+        class="manage-page hidden"
+    >
+
+        <div class="section-heading">
+
+            <div>
+                <h2 id="formHeading">
+                    Create a New Post
+                </h2>
+
+                <p>
+                    Share your thoughts with readers.
+                </p>
+            </div>
+
+            <button
+                class="btn btn-secondary"
+                onclick="showHome()"
+            >
+                Cancel
+            </button>
+
+        </div>
+
+
+        <form
+            id="postForm"
+            class="form-card"
+        >
+
+            <input
+                type="hidden"
+                id="editId"
+            >
+
+
+            <div class="form-row">
+
+                <div class="form-group">
+
+                    <label>
+                        Post Title
+                    </label>
+
+                    <input
+                        id="postTitle"
+                        class="form-control"
+                        placeholder="Enter an attractive title..."
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Category
+                    </label>
+
+                    <select
+                        id="postCategory"
+                        class="form-control"
+                        required
+                    >
+
+                        <option value="">
+                            Select category
+                        </option>
+
+                        <option>
+                            Technology
+                        </option>
+
+                        <option>
+                            Design
+                        </option>
+
+                        <option>
+                            Lifestyle
+                        </option>
+
+                        <option>
+                            Business
+                        </option>
+
+                        <option>
+                            Travel
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Author
+                </label>
+
+                <input
+                    id="postAuthor"
+                    class="form-control"
+                    placeholder="Your name"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Article Content
+                </label>
+
+                <textarea
+                    id="postContent"
+                    class="form-control"
+                    rows="10"
+                    placeholder="Write your article here..."
+                    required
+                ></textarea>
+
+            </div>
+
+
+            <div
+                style="
+                    display:flex;
+                    gap:10px;
+                    flex-wrap:wrap;
+                "
+            >
+
+                <button
+                    type="submit"
+                    class="btn btn-primary"
+                >
+                    Publish Post
+                </button>
+
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    onclick="resetPostForm()"
+                >
+                    Clear
+                </button>
+
+            </div>
+
+        </form>
+
+
+        <!-- Manage existing -->
+
+        <div class="manage-list">
+
+            <div class="section-heading">
+
+                <div>
+                    <h2>Your Posts</h2>
+
+                    <p>
+                        Edit or delete published content.
+                    </p>
+                </div>
+
+            </div>
+
+            <div id="manageList"></div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<footer>
+
+    <div class="container">
+
+        <strong>
+            ✦ Inkly
+        </strong>
+
+        <p>
+            A modern blog management platform.
+        </p>
+
+        <p style="margin-top:8px;">
+            © 2026 Inkly. Built with HTML, CSS & JavaScript.
+        </p>
+
+    </div>
+
+</footer>
+
+
+<!-- Toast -->
+
+<div
+    id="toast"
+    class="toast"
+></div>
+
+
+<script>
+
+    /* =========================================
+       INITIAL DATA
+    ========================================= */
+
+    const defaultPosts = [
+
+        {
+            id: 1,
+
+            title:
+                "The Future of Web Development",
+
+            category:
+                "Technology",
+
+            author:
+                "Alex Morgan",
+
+            date:
+                "Oct 02, 2026",
+
+            icon:
+                "💻",
+
+            cover:
+                "cover-tech",
+
+            content:
+                `
+                <p>
+                    The web is constantly evolving. From static
+                    HTML pages to highly interactive applications,
+                    web development has changed dramatically.
+                </p>
+
+                <p>
+                    Modern developers are now building experiences
+                    that are fast, accessible, responsive and
+                    intelligent.
+                </p>
+
+                <p>
+                    Technologies such as JavaScript, modern CSS,
+                    component-based frameworks and cloud platforms
+                    have made it possible to build powerful products
+                    directly for the browser.
+                </p>
+
+                <p>
+                    The most important skill, however, is not learning
+                    every framework. It is understanding the fundamentals
+                    and knowing how to create useful experiences for
+                    real users.
+                </p>
+                `,
+
+            likes: 24,
+
+            liked: false,
+
+            bookmarked: false,
+
+            comments: [
+                {
+                    name: "Sam",
+                    text: "Really useful article!"
+                }
+            ]
+        },
+
+
+        {
+            id: 2,
+
+            title:
+                "Designing Interfaces People Love",
+
+            category:
+                "Design",
+
+            author:
+                "Sarah Wilson",
+
+            date:
+                "Sep 28, 2026",
+
+            icon:
+                "🎨",
+
+            cover:
+                "cover-design",
+
+            content:
+                `
+                <p>
+                    Great design is not simply about making an
+                    interface look beautiful.
+                </p>
+
+                <p>
+                    A good interface helps people understand what
+                    they can do, where they are and what happens next.
+                </p>
+
+                <p>
+                    Typography, spacing, contrast, hierarchy and
+                    micro-interactions all contribute to a product's
+                    usability.
+                </p>
+
+                <p>
+                    The best interfaces feel simple because complexity
+                    has been carefully removed.
+                </p>
+                `,
+
+            likes: 42,
+
+            liked: false,
+
+            bookmarked: false,
+
+            comments: []
+        },
+
+
+        {
+            id: 3,
+
+            title:
+                "Small Habits, Big Results",
+
+            category:
+                "Lifestyle",
+
+            author:
+                "James Lee",
+
+            date:
+                "Sep 24, 2026",
+
+            icon:
+                "🌱",
+
+            cover:
+                "cover-life",
+
+            content:
+                `
+                <p>
+                    Personal growth does not require massive changes.
+                    Small improvements repeated consistently can create
+                    remarkable results.
+                </p>
+
+                <p>
+                    Reading for fifteen minutes, taking a daily walk,
+                    planning tomorrow and reducing distractions are
+                    simple examples.
+                </p>
+
+                <p>
+                    Focus on consistency rather than perfection.
+                    A small habit that you actually maintain is more
+                    valuable than an ambitious plan you abandon.
+                </p>
+                `,
+
+            likes: 31,
+
+            liked: false,
+
+            bookmarked: false,
+
+            comments: []
+        },
+
+
+        {
+            id: 4,
+
+            title:
+                "Building a Strong Personal Brand",
+
+            category:
+                "Business",
+
+            author:
+                "David Carter",
+
+            date:
+                "Sep 20, 2026",
+
+            icon:
+                "🚀",
+
+            cover:
+                "cover-business",
+
+            content:
+                `
+                <p>
+                    Your personal brand is the combination of your
+                    skills, reputation, values and the way people
+                    remember you.
+                </p>
+
+                <p>
+                    Start by identifying what you are genuinely good
+                    at and what problems you can solve.
+                </p>
+
+                <p>
+                    Then share useful knowledge consistently through
+                    writing, projects and conversations.
+                </p>
+                `,
+
+            likes: 18,
+
+            liked: false,
+
+            bookmarked: false,
+
+            comments: []
+        },
+
+
+        {
+            id: 5,
+
+            title:
+                "A Weekend Guide to Beautiful Places",
+
+            category:
+                "Travel",
+
+            author:
+                "Emma Davis",
+
+            date:
+                "Sep 15, 2026",
+
+            icon:
+                "✈️",
+
+            cover:
+                "cover-travel",
+
+            content:
+                `
+                <p>
+                    A great weekend trip does not always require a
+                    complicated itinerary.
+                </p>
+
+                <p>
+                    Pick one destination, discover a few local places,
+                    eat something new and leave enough time to simply
+                    enjoy the surroundings.
+                </p>
+
+                <p>
+                    Travelling slowly often creates better memories
+                    than trying to see everything.
+                </p>
+                `,
+
+            likes: 27,
+
+            liked: false,
+
+            bookmarked: false,
+
+            comments: []
+        }
+
+    ];
+
+
+    /* =========================================
+       STATE
+    ========================================= */
+
+    let posts =
+        JSON.parse(
+            localStorage.getItem("inkly_posts")
+        ) || defaultPosts;
+
+
+    let currentPostId = null;
+
+
+    /* =========================================
+       LOCAL STORAGE
+    ========================================= */
+
+    function savePosts() {
+
+        localStorage.setItem(
+            "inkly_posts",
+            JSON.stringify(posts)
+        );
+    }
+
+
+    /* =========================================
+       DOM
+    ========================================= */
+
+    const postsGrid =
+        document.getElementById("postsGrid");
+
+    const emptyState =
+        document.getElementById("emptyState");
+
+    const searchInput =
+        document.getElementById("searchInput");
+
+    const categoryFilter =
+        document.getElementById("categoryFilter");
+
+    const homePage =
+        document.getElementById("homePage");
+
+    const readerPage =
+        document.getElementById("readerPage");
+
+    const managePage =
+        document.getElementById("managePage");
+
+
+    /* =========================================
+       PAGE NAVIGATION
+    ========================================= */
+
+    function hidePages() {
+
+        homePage.classList.add("hidden");
+        readerPage.classList.add("hidden");
+        managePage.classList.add("hidden");
+
+    }
+
+
+    function showHome() {
+
+        hidePages();
+
+        homePage.classList.remove("hidden");
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+
+        renderPosts();
+    }
+
+
+    function showManage() {
+
+        hidePages();
+
+        managePage.classList.remove("hidden");
+
+        renderManageList();
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+    }
+
+
+    function scrollToPosts() {
+
+        document
+            .getElementById("postsSection")
+            .scrollIntoView({
+                behavior: "smooth"
+            });
+
+    }
+
+
+    function toggleMobileMenu() {
+
+        const nav =
+            document.querySelector("nav");
+
+        if (nav.style.display === "flex") {
+
+            nav.style.display = "";
+
+        } else {
+
+            nav.style.display = "flex";
+            nav.style.position = "absolute";
+            nav.style.top = "64px";
+            nav.style.left = "0";
+            nav.style.right = "0";
+            nav.style.padding = "15px";
+            nav.style.background = "var(--card)";
+            nav.style.borderBottom = "1px solid var(--border)";
+            nav.style.flexDirection = "column";
+        }
+    }
+
+
+    /* =========================================
+       RENDER POSTS
+    ========================================= */
+
+    function renderPosts() {
+
+        const search =
+            searchInput.value
+                .trim()
+                .toLowerCase();
+
+        const category =
+            categoryFilter.value;
+
+
+        const filtered =
+            posts.filter(post => {
+
+                const matchesSearch =
+                    !search ||
+                    post.title
+                        .toLowerCase()
+                        .includes(search) ||
+
+                    post.author
+                        .toLowerCase()
+                        .includes(search) ||
+
+                    post.category
+                        .toLowerCase()
+                        .includes(search) ||
+
+                    stripHTML(post.content)
+                        .toLowerCase()
+                        .includes(search);
+
+
+                const matchesCategory =
+                    category === "all" ||
+                    post.category === category;
+
+
+                return (
+                    matchesSearch &&
+                    matchesCategory
+                );
+
+            });
+
+
+        postsGrid.innerHTML = "";
+
+
+        document.getElementById(
+            "resultCount"
+        ).textContent =
+            `${filtered.length} ${
+                filtered.length === 1
+                    ? "article"
+                    : "articles"
+            } available`;
+
+
+        if (filtered.length === 0) {
+
+            emptyState.classList.remove("hidden");
+
+            return;
+        }
+
+
+        emptyState.classList.add("hidden");
+
+
+        filtered.forEach((post, index) => {
+
+            const card =
+                document.createElement("article");
+
+            card.className = "post-card";
+
+            card.style.animationDelay =
+                `${index * 0.06}s`;
+
+
+            card.innerHTML = `
+
+                <div class="post-cover ${post.cover}">
+                    ${post.icon}
+                </div>
+
+                <div class="post-body">
+
+                    <span class="category">
+                        ${escapeHTML(post.category)}
+                    </span>
+
+                    <h3 class="post-title">
+                        ${escapeHTML(post.title)}
+                    </h3>
+
+                    <p class="post-excerpt">
+                        ${escapeHTML(
+                            stripHTML(post.content)
+                        )}
+                    </p>
+
+
+                    <div class="post-info">
+
+                        <div class="author">
+
+                            <div class="avatar">
+                                ${getInitials(post.author)}
+                            </div>
+
+                            <div>
+
+                                <div class="author-name">
+                                    ${escapeHTML(post.author)}
+                                </div>
+
+                                <div class="post-date">
+                                    ${escapeHTML(post.date)}
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="card-actions">
+
+                            <button
+                                class="small-btn ${
+                                    post.liked
+                                        ? "liked"
+                                        : ""
+                                }"
+                                onclick="event.stopPropagation(); toggleLike(${post.id})"
+                                title="Like"
+                            >
+                                ${
+                                    post.liked
+                                        ? "♥"
+                                        : "♡"
+                                }
+                                ${post.likes}
+                            </button>
+
+
+                            <button
+                                class="small-btn ${
+                                    post.bookmarked
+                                        ? "bookmarked"
+                                        : ""
+                                }"
+                                onclick="event.stopPropagation(); toggleBookmark(${post.id})"
+                                title="Bookmark"
+                            >
+                                ${
+                                    post.bookmarked
+                                        ? "🔖"
+                                        : "🏷️"
+                                }
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <button
+                        class="btn btn-primary"
+                        style="width:100%;margin-top:15px;"
+                        onclick="readPost(${post.id})"
+                    >
+                        Read Article →
+                    </button>
+
+                </div>
+            `;
+
+
+            postsGrid.appendChild(card);
+
+        });
+
+    }
+
+
+    /* =========================================
+       READ POST
+    ========================================= */
+
+    function readPost(id) {
+
+        const post =
+            posts.find(
+                item => item.id === id
+            );
+
+
+        if (!post) {
+
+            showToast(
+                "This article is no longer available."
+            );
+
+            return;
+        }
+
+
+        currentPostId = id;
+
+        hidePages();
+
+        readerPage.classList.remove("hidden");
+
+
+        document.getElementById(
+            "readerCover"
+        ).className =
+            `reader-cover ${post.cover}`;
+
+
+        document.getElementById(
+            "readerCover"
+        ).textContent =
+            post.icon;
+
+
+        document.getElementById(
+            "readerCategory"
+        ).textContent =
+            post.category;
+
+
+        document.getElementById(
+            "readerTitle"
+        ).textContent =
+            post.title;
+
+
+        document.getElementById(
+            "readerAuthor"
+        ).textContent =
+            `By ${post.author}`;
+
+
+        document.getElementById(
+            "readerDate"
+        ).textContent =
+            post.date;
+
+
+        const wordCount =
+            stripHTML(post.content)
+                .split(/\s+/)
+                .length;
+
+
+        document.getElementById(
+            "readerReadTime"
+        ).textContent =
+            `${Math.max(
+                1,
+                Math.ceil(wordCount / 180)
+            )} min read`;
+
+
+        document.getElementById(
+            "readerContent"
+        ).innerHTML =
+            post.content;
+
+
+        updateReaderActions();
+
+        renderComments();
+
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+
+    }
+
+
+    /* =========================================
+       LIKE
+    ========================================= */
+
+    function toggleLike(id) {
+
+        const post =
+            posts.find(
+                item => item.id === id
+            );
+
+
+        if (!post) return;
+
+
+        post.liked =
+            !post.liked;
+
+
+        post.likes +=
+            post.liked ? 1 : -1;
+
+
+        savePosts();
+
+        renderPosts();
+
+        updateReaderActions();
+
+    }
+
+
+    function toggleCurrentLike() {
+
+        if (currentPostId) {
+
+            toggleLike(currentPostId);
+
+        }
+    }
+
+
+    /* =========================================
+       BOOKMARK
+    ========================================= */
+
+    function toggleBookmark(id) {
+
+        const post =
+            posts.find(
+                item => item.id === id
+            );
+
+
+        if (!post) return;
+
+
+        post.bookmarked =
+            !post.bookmarked;
+
+
+        savePosts();
+
+        renderPosts();
+
+        updateReaderActions();
+
+
+        showToast(
+            post.bookmarked
+                ? "Article bookmarked 🔖"
+                : "Bookmark removed"
+        );
+
+    }
+
+
+    function toggleCurrentBookmark() {
+
+        if (currentPostId) {
+
+            toggleBookmark(currentPostId);
+
+        }
+    }
+
+
+    function updateReaderActions() {
+
+        const post =
+            posts.find(
+                item => item.id === currentPostId
+            );
+
+
+        if (!post) return;
+
+
+        const likeBtn =
+            document.getElementById(
+                "readerLike"
+            );
+
+
+        const bookmarkBtn =
+            document.getElementById(
+                "readerBookmark"
+            );
+
+
+        likeBtn.innerHTML =
+            post.liked
+                ? `♥ Liked (${post.likes})`
+                : `♡ Like (${post.likes})`;
+
+
+        bookmarkBtn.innerHTML =
+            post.bookmarked
+                ? "🔖 Bookmarked"
+                : "🏷️ Bookmark";
+
+    }
+
+
+    /* =========================================
+       COMMENTS
+    ========================================= */
+
+    function renderComments() {
+
+        const post =
+            posts.find(
+                item => item.id === currentPostId
+            );
+
+
+        if (!post) return;
+
+
+        const list =
+            document.getElementById(
+                "commentsList"
+            );
+
+
+        const count =
+            document.getElementById(
+                "commentCount"
+            );
+
+
+        count.textContent =
+            `${post.comments.length} ${
+                post.comments.length === 1
+                    ? "comment"
+                    : "comments"
+            }`;
+
+
+        list.innerHTML = "";
+
+
+        if (post.comments.length === 0) {
+
+            list.innerHTML = `
+                <p style="color:var(--muted);">
+                    No comments yet. Be the first to comment.
+                </p>
+            `;
+
+            return;
+        }
+
+
+        post.comments.forEach(comment => {
+
+            const div =
+                document.createElement("div");
+
+            div.className = "comment";
+
+
+            div.innerHTML = `
+                <strong>
+                    ${escapeHTML(comment.name)}
+                </strong>
+
+                <p>
+                    ${escapeHTML(comment.text)}
+                </p>
+            `;
+
+
+            list.appendChild(div);
+
+        });
+
+    }
+
+
+    function addComment() {
+
+        const input =
+            document.getElementById(
+                "commentInput"
+            );
+
+
+        const text =
+            input.value.trim();
+
+
+        if (!text) {
+
+            showToast(
+                "Please write a comment first."
+            );
+
+            return;
+        }
+
+
+        const post =
+            posts.find(
+                item => item.id === currentPostId
+            );
+
+
+        if (!post) return;
+
+
+        post.comments.push({
+
+            name: "You",
+
+            text: text
+
+        });
+
+
+        savePosts();
+
+
+        input.value = "";
+
+
+        renderComments();
+
+
+        showToast(
+            "Comment added successfully 💬"
+        );
+
+    }
+
+
+    /* =========================================
+       CREATE / EDIT
+    ========================================= */
+
+    document
+        .getElementById("postForm")
+        .addEventListener(
+            "submit",
+            function(event) {
+
+                event.preventDefault();
+
+
+                const editId =
+                    document.getElementById(
+                        "editId"
+                    ).value;
+
+
+                const title =
+                    document.getElementById(
+                        "postTitle"
+                    ).value.trim();
+
+
+                const category =
+                    document.getElementById(
+                        "postCategory"
+                    ).value;
+
+
+                const author =
+                    document.getElementById(
+                        "postAuthor"
+                    ).value.trim();
+
+
+                const content =
+                    document.getElementById(
+                        "postContent"
+                    ).value.trim();
+
+
+                if (
+                    !title ||
+                    !category ||
+                    !author ||
+                    !content
+                ) {
+
+                    showToast(
+                        "Please fill all fields."
+                    );
+
+                    return;
+                }
+
+
+                if (editId) {
+
+                    const post =
+                        posts.find(
+                            item =>
+                                item.id ===
+                                Number(editId)
+                        );
+
+
+                    if (!post) {
+
+                        showToast(
+                            "Post is unavailable."
+                        );
+
+                        return;
+                    }
+
+
+                    post.title = title;
+
+                    post.category = category;
+
+                    post.author = author;
+
+                    post.content =
+                        createParagraphs(
+                            content
+                        );
+
+
+                    post.cover =
+                        getCoverClass(category);
+
+                    post.icon =
+                        getCategoryIcon(category);
+
+
+                    showToast(
+                        "Post updated successfully ✨"
+                    );
+
+                } else {
+
+                    const newPost = {
+
+                        id: Date.now(),
+
+                        title,
+
+                        category,
+
+                        author,
+
+                        date:
+                            formatDate(
+                                new Date()
+                            ),
+
+                        icon:
+                            getCategoryIcon(
+                                category
+                            ),
+
+                        cover:
+                            getCoverClass(
+                                category
+                            ),
+
+                        content:
+                            createParagraphs(
+                                content
+                            ),
+
+                        likes: 0,
+
+                        liked: false,
+
+                        bookmarked: false,
+
+                        comments: []
+
+                    };
+
+
+                    posts.unshift(
+                        newPost
+                    );
+
+
+                    showToast(
+                        "Post published successfully 🎉"
+                    );
+
+                }
+
+
+                savePosts();
+
+                resetPostForm();
+
+                renderManageList();
+
+                renderPosts();
+
+            }
+        );
+
+
+    function editPost(id) {
+
+        const post =
+            posts.find(
+                item => item.id === id
+            );
+
+
+        if (!post) {
+
+            showToast(
+                "Post is unavailable."
+            );
+
+            return;
+        }
+
+
+        document.getElementById(
+            "editId"
+        ).value =
+            post.id;
+
+
+        document.getElementById(
+            "postTitle"
+        ).value =
+            post.title;
+
+
+        document.getElementById(
+            "postCategory"
+        ).value =
+            post.category;
+
+
+        document.getElementById(
+            "postAuthor"
+        ).value =
+            post.author;
+
+
+        document.getElementById(
+            "postContent"
+        ).value =
+            stripHTML(post.content);
+
+
+        document.getElementById(
+            "formHeading"
+        ).textContent =
+            "Edit Post";
+
+
+        managePage.scrollIntoView({
+            behavior: "smooth"
+        });
+
+    }
+
+
+    function deletePost(id) {
+
+        const post =
+            posts.find(
+                item => item.id === id
+            );
+
+
+        if (!post) return;
+
+
+        const confirmed =
+            confirm(
+                `Delete "${post.title}"?`
+            );
+
+
+        if (!confirmed) return;
+
+
+        posts =
+            posts.filter(
+                item => item.id !== id
+            );
+
+
+        savePosts();
+
+        renderManageList();
+
+        renderPosts();
+
+
+        if (currentPostId === id) {
+
+            showHome();
+
+        }
+
+
+        showToast(
+            "Post deleted."
+        );
+
+    }
+
+
+    function resetPostForm() {
+
+        document
+            .getElementById("postForm")
+            .reset();
+
+
+        document.getElementById(
+            "editId"
+        ).value = "";
+
+
+        document.getElementById(
+            "formHeading"
+        ).textContent =
+            "Create a New Post";
+
+    }
+
+
+    /* =========================================
+       MANAGE LIST
+    ========================================= */
+
+    function renderManageList() {
+
+        const list =
+            document.getElementById(
+                "manageList"
+            );
+
+
+        list.innerHTML = "";
+
+
+        if (posts.length === 0) {
+
+            list.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon">
+                        📝
+                    </div>
+
+                    <h3>
+                        No posts yet
+                    </h3>
+
+                    <p>
+                        Create your first article above.
+                    </p>
+                </div>
+            `;
+
+            return;
+        }
+
+
+        posts.forEach(post => {
+
+            const item =
+                document.createElement("div");
+
+            item.className =
+                "manage-item";
+
+
+            item.innerHTML = `
+
+                <div>
+
+                    <h4>
+                        ${escapeHTML(post.title)}
+                    </h4>
+
+                    <p>
+                        ${escapeHTML(post.category)}
+                        •
+                        ${escapeHTML(post.author)}
+                        •
+                        ${escapeHTML(post.date)}
+                    </p>
+
+                </div>
+
+
+                <div class="manage-actions">
+
+                    <button
+                        class="btn btn-secondary"
+                        onclick="readPost(${post.id})"
+                    >
+                        View
+                    </button>
+
+                    <button
+                        class="btn btn-secondary"
+                        onclick="editPost(${post.id})"
+                    >
+                        Edit
+                    </button>
+
+                    <button
+                        class="btn btn-danger"
+                        onclick="deletePost(${post.id})"
+                    >
+                        Delete
+                    </button>
+
+                </div>
+
+            `;
+
+
+            list.appendChild(item);
+
+        });
+
+    }
+
+
+    /* =========================================
+       THEME
+    ========================================= */
+
+    function toggleTheme() {
+
+        document.body.classList.toggle("dark");
+
+
+        const isDark =
+            document.body.classList.contains(
+                "dark"
+            );
+
+
+        localStorage.setItem(
+            "inkly_theme",
+            isDark ? "dark" : "light"
+        );
+
+
+        document.getElementById(
+            "themeButton"
+        ).textContent =
+            isDark ? "☀️" : "🌙";
+
+    }
+
+
+    function loadTheme() {
+
+        const theme =
+            localStorage.getItem(
+                "inkly_theme"
+            );
+
+
+        if (theme === "dark") {
+
+            document.body.classList.add(
+                "dark"
+            );
+
+
+            document.getElementById(
+                "themeButton"
+            ).textContent =
+                "☀️";
+        }
+
+    }
+
+
+    /* =========================================
+       SEARCH
+    ========================================= */
+
+    searchInput.addEventListener(
+        "input",
+        renderPosts
+    );
+
+
+    categoryFilter.addEventListener(
+        "change",
+        renderPosts
+    );
+
+
+    /* =========================================
+       HELPERS
+    ========================================= */
+
+    function stripHTML(html) {
+
+        const div =
+            document.createElement("div");
+
+        div.innerHTML = html;
+
+        return div.textContent || "";
+
+    }
+
+
+    function escapeHTML(text) {
+
+        const div =
+            document.createElement("div");
+
+        div.textContent = text;
+
+        return div.innerHTML;
+
+    }
+
+
+    function createParagraphs(text) {
+
+        return text
+            .split(/\n+/)
+            .filter(Boolean)
+            .map(
+                paragraph =>
+                    `<p>${escapeHTML(
+                        paragraph
+                    )}</p>`
+            )
+            .join("");
+
+    }
+
+
+    function getInitials(name) {
+
+        return name
+            .split(" ")
+            .map(word => word[0])
+            .join("")
+            .substring(0, 2)
+            .toUpperCase();
+
+    }
+
+
+    function getCoverClass(category) {
+
+        const classes = {
+
+            Technology:
+                "cover-tech",
+
+            Design:
+                "cover-design",
+
+            Lifestyle:
+                "cover-life",
+
+            Business:
+                "cover-business",
+
+            Travel:
+                "cover-travel"
+
+        };
+
+
+        return (
+            classes[category] ||
+            "cover-tech"
+        );
+
+    }
+
+
+    function getCategoryIcon(category) {
+
+        const icons = {
+
+            Technology:
+                "💻",
+
+            Design:
+                "🎨",
+
+            Lifestyle:
+                "🌱",
+
+            Business:
+                "🚀",
+
+            Travel:
+                "✈️"
+
+        };
+
+
+        return (
+            icons[category] ||
+            "📝"
+        );
+
+    }
+
+
+    function formatDate(date) {
+
+        return date.toLocaleDateString(
+            "en-US",
+            {
+                month: "short",
+                day: "2-digit",
+                year: "numeric"
+            }
+        );
+
+    }
+
+
+    /* =========================================
+       TOAST
+    ========================================= */
+
+    let toastTimer;
+
+
+    function showToast(message) {
+
+        const toast =
+            document.getElementById(
+                "toast"
+            );
+
+
+        toast.textContent =
+            message;
+
+
+        toast.classList.add(
+            "show"
+        );
+
+
+        clearTimeout(
+            toastTimer
+        );
+
+
+        toastTimer =
+            setTimeout(
+                () => {
+
+                    toast.classList.remove(
+                        "show"
+                    );
+
+                },
+                2500
+            );
+
+    }
+
+
+    /* =========================================
+       INITIALIZE
+    ========================================= */
+
+    loadTheme();
+
+    renderPosts();
+
+    renderManageList();
+
+</script>
+
+</body>
+</html>
